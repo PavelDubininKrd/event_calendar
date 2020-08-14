@@ -16,23 +16,23 @@
             @csrf
             <div class="form-group">
                 <label>Имя проекта</label>
-                <input type="text" class="form-control" id="projectName" name="title" required>
+                <input type="text" class="form-control" id="projectName" name="title" value="{{ old('title') }}" required>
             </div>
             <div class="form-group">
                 <label>Стоимость</label>
-                <input type="number" class="form-control" id="projectName" name="cost" required>
+                <input type="number" class="form-control" id="projectName" name="cost" value="{{ old('cost') }}" required>
             </div>
             <div class="form-group">
                 <label>Тип работы</label>
-                <input type="text" class="form-control" id="projectName" name="type" required>
+                <input type="text" class="form-control" id="projectName" name="type" value="{{ old('type') }}" required>
             </div>
             <div class="form-group">
                 <label>Компания</label>
-                <input type="text" class="form-control" id="projectName" name="company" required>
+                <input type="text" class="form-control" id="projectName" name="company" value="{{ old('company') }}" required>
             </div>
             <div class="form-group">
                 <label>Ответственный</label>
-                <input type="text" class="form-control" id="projectName" name="responsible" required>
+                <input type="text" class="form-control" id="projectName" name="responsible" value="{{ old('responsible') }}" required>
             </div>
             <div class="form-group">
                 <label>Смена</label>
@@ -44,7 +44,7 @@
             </div>
             <div class="form-group">
                 <label>Дата</label>
-                <input type="date" class="form-control" id="projectName" name="date" placeholder="Дата" required>
+                <input type="date" class="form-control" id="projectName" name="date" placeholder="Дата" value="{{ old('date') }}" required>
             </div>
             <button type="submit" class="btn btn-primary">Создать</button>
         </form>

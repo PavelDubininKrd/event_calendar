@@ -30,6 +30,7 @@ class EventController extends Controller
     }
 
     public function update(Request $request, $id) {
+//        $user_id = Auth::id();
         $event = CalendarEvent::find($id);
         $validatedData = $request->validate([
             'title' => 'required',
@@ -40,8 +41,8 @@ class EventController extends Controller
             'date' => 'required',
             'change' => [
                 'required',
-                Rule::unique('calendar_events')->ignore($event->user_id,'user_id')->where(function ($query) use ($event) {
-                    return $query->where('user_id', $event->title);
+                Rule::unique('calendar_events')->ignore($event->id,'id')->where(function ($query) use ($event, $request) {
+                    return $query->where('date', $request->date)->where('user_id', $event->user_id);
                 })
         ]]);
         $event->update($validatedData);
@@ -58,8 +59,8 @@ class EventController extends Controller
             'company' => 'required',
             'responsible' => 'required',
             'date' => 'required',
-            'change' => Rule::unique('calendar_events')->where(function ($query) use ($user_id) {
-                return $query->where('user_id', $user_id);
+            'change' => Rule::unique('calendar_events')->where(function ($query) use ($user_id, $request) {
+                return $query->where('date', $request->date)->where('user_id', $user_id);
             })
         ]);
         $validatedData['user_id'] = $user_id;
