@@ -16,7 +16,6 @@ class CreateCompaniesTable extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->text('name');
-            $table->text('company_id');
         });
     }
 

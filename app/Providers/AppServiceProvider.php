@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Company;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        View::composer('layouts.app', function ($view){
+            $view->with('companies', $companies = Company::all());
+        });
     }
 }

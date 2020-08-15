@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\CalendarEvent;
+use App\Company;
+use App\Rules\ChangeDate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -14,14 +16,40 @@ class EventController extends Controller
         $this->middleware('auth');
     }
 
+    public function show()
+    {
+        $events = CalendarEvent::with('user')->orderBy('date')->paginate(10);
+        return view('pages.show', compact('events' ));
+    }
+
     public function index()
     {
-        $events = CalendarEvent::with('user')->orderBy('date')->get();
-        return view('pages.home', compact('events'));
+        $events = CalendarEvent::with('user')->orderBy('date')->paginate(10);
+        return view('pages.show', compact('events' ));
     }
 
     public function create() {
         return view('pages.event_create');
+    }
+
+    public function store(Request $request) {
+        $company_save = Company::firstOrCreate(['name' => $request->company_name]);
+        $user_id = Auth::id();
+
+        $validatedData = $request->validate([
+            'title' => 'required',
+            'cost' => 'required|numeric',
+            'type' => 'required',
+            'responsible' => 'required',
+            'date' => 'required|date',
+            'change' => ['required', new ChangeDate($request->all())],
+        ]);
+        $validatedData['user_id'] = $user_id;
+        $validatedData['company_id'] = $company_save->id;
+        CalendarEvent::create($validatedData);
+//        $company = Company::find($company_save->id);
+//        $company->users()->updateExistingPivot($user_id);
+        return redirect()->route('show');
     }
 
     public function edit($id) {
@@ -30,13 +58,12 @@ class EventController extends Controller
     }
 
     public function update(Request $request, $id) {
-//        $user_id = Auth::id();
+        $company_save = Company::firstOrCreate(['name' => $request->company_name]);
         $event = CalendarEvent::find($id);
         $validatedData = $request->validate([
             'title' => 'required',
             'cost' => 'required|numeric',
             'type' => 'required',
-            'company' => 'required',
             'responsible' => 'required',
             'date' => 'required',
             'change' => [
@@ -45,32 +72,19 @@ class EventController extends Controller
                     return $query->where('date', $request->date)->where('user_id', $event->user_id);
                 })
         ]]);
+        $validatedData['company_id'] = $company_save->id;
         $event->update($validatedData);
-        return redirect()->route('home');
-    }
 
-    public function store(Request $request)
-    {
-        $user_id = Auth::id();
-        $validatedData = $request->validate([
-            'title' => 'required',
-            'cost' => 'required|numeric',
-            'type' => 'required',
-            'company' => 'required',
-            'responsible' => 'required',
-            'date' => 'required',
-            'change' => Rule::unique('calendar_events')->where(function ($query) use ($user_id, $request) {
-                return $query->where('date', $request->date)->where('user_id', $user_id);
-            })
-        ]);
-        $validatedData['user_id'] = $user_id;
-        CalendarEvent::create($validatedData);
-
-        return redirect()->route('home');
+        return redirect()->route('show');
     }
 
     public function destroy($id) {
         CalendarEvent::where('id', $id)->delete();
-        return redirect()->route('home');
+        return redirect()->route('show');
+    }
+
+    public function companyShow($id) {
+        $companies = Company::with('events')->with('users')->where('id', $id)->paginate(10);
+        return view('pages.category_list', compact('companies'));
     }
 }

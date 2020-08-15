@@ -41,4 +41,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(CalendarEvent::class);
     }
+
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class, 'user_company');
+    }
 }

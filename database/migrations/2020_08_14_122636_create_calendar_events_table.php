@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWorkingsTable extends Migration
+class CreateCalendarEventsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,13 +18,14 @@ class CreateWorkingsTable extends Migration
             $table->text('title');
             $table->integer('cost');
             $table->text('type');
-            $table->text('company');
             $table->text('responsible');
             $table->date('date');
-            $table->integer('change')->unique();
+            $table->integer('change');
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('company_id');
             $table->timestamps();
             $table->foreign('user_id', 'ix_calendar_events_user_id')->references('id')->on('users');
+            $table->foreign('company_id', 'ix_calendar_events_company_id')->references('id')->on('companies');
         });
     }
 
@@ -37,6 +38,9 @@ class CreateWorkingsTable extends Migration
     {
         Schema::table('calendar_events', function (Blueprint $table) {
             $table->dropForeign(['ix_calendar_events_user_id']);
+        });
+        Schema::table('calendar_events', function (Blueprint $table) {
+            $table->dropForeign(['ix_calendar_events_company_id']);
         });
         Schema::dropIfExists('calendar_events');
     }

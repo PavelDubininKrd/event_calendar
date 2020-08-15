@@ -28,7 +28,7 @@
             </div>
             <div class="form-group">
                 <label>Компания</label>
-                <input type="text" class="form-control" id="projectName" name="company" value="{{ $event->company }}" required>
+                <input type="text" class="form-control" id="projectName" name="company_name" value="{{ $event->company->name }}" required>
             </div>
             <div class="form-group">
                 <label>Ответственный</label>

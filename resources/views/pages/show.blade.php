@@ -30,7 +30,7 @@
                         <td class="text-center">{{ $event->title }}</td>
                         <td class="text-center">{{ $event->cost }}</td>
                         <td class="text-center">{{ $event->type }}</td>
-                        <td class="text-center">{{ $event->company }}</td>
+                        <td class="text-center">{{ $event->company->name }}</td>
                         <td class="text-center">{{ $event->responsible }}</td>
                         <td class="text-center">{{ $event->change }}</td>
                         <td class="text-center">{{ $event->getDate() }}</td>
@@ -50,6 +50,7 @@
                 @endforeach
                 </tbody>
             </table>
+            {{ $events->links() }}
         </div>
     </div>
 </div>

@@ -23,9 +23,24 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                    <div class="lex-center position-ref full-height">
-                        <a class="btn btn-outline-primary" href="{{ url('/home') }}">К списку событий</a>
+                @auth()
+                    <div class="lex-center position-ref full-height mr-3">
+                        <a class="btn btn-outline-primary" href="{{ url('/show') }}">К списку событий</a>
                     </div>
+                    <div class="dropdown show">
+                        <a class="btn btn-outline-primary" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Выбор компании
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            @if($companies->isEmpty())
+                                <a class="dropdown-item" href="">Пока нет ни одной компании</a>
+                            @endif
+                            @foreach($companies as $company)
+                                <a class="dropdown-item" href="{{ route('company.show', $company->id) }}">{{ $company->name }}</a>
+                            @endforeach
+                        </div>
+                    </div>
+                @endauth
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
