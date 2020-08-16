@@ -36,10 +36,10 @@
                         <td class="text-center">{{ $event->getDate() }}</td>
                         <td class="text-center">{{ $event->user->name }}</td>
                         <td class="text-center">
-                            <form action="{{ route('event.destroy', $event->id) }}" method="POST">
+                            <form action="{{ route('destroy', [$event->id, $event->company->id]) }}" method="POST">
                                 @method('DELETE')
                                 @csrf
-                                <a href="{{ route('event.edit', $event->id) }}" type="button" class="btn btn-success m-1">Изменить</a>
+                                <a href="{{ route('event.edit', $event->id)}}" type="button" class="btn btn-success m-1">Изменить</a>
                                 <button onclick="return confirm('Вы уверены?')" type="submit" class="btn btn-danger delete">
                                     <input type="submit" value="Удалить" class="btn btn-danger p-0">
                                 </button>

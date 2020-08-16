@@ -18,7 +18,7 @@ class EventController extends Controller
 
     public function show()
     {
-        $events = CalendarEvent::with('user')->orderBy('date')->paginate(10);
+        $events = CalendarEvent::with('user')->orderBy('date')->orderBy('change')->paginate(10);
         return view('pages.show', compact('events' ));
     }
 
@@ -47,8 +47,10 @@ class EventController extends Controller
         $validatedData['user_id'] = $user_id;
         $validatedData['company_id'] = $company_save->id;
         CalendarEvent::create($validatedData);
-//        $company = Company::find($company_save->id);
-//        $company->users()->updateExistingPivot($user_id);
+
+        $company = Company::find($company_save->id);
+        $company->users()->syncWithoutDetaching($user_id);
+
         return redirect()->route('show');
     }
 
@@ -78,8 +80,13 @@ class EventController extends Controller
         return redirect()->route('show');
     }
 
-    public function destroy($id) {
+    public function eventAndCompanyDestroy($id, $company_id) {
         CalendarEvent::where('id', $id)->delete();
+        $company = Company::with('events')->where('id', $company_id)->first();
+        if ($company->events->isEmpty()) {
+            Company::where('id', $company_id)->delete();
+        }
+        // Cannot delete or update a parent row: a foreign key constraint fails.
         return redirect()->route('show');
     }
 

@@ -21,4 +21,5 @@ Auth::routes();
 
 Route::get('/show', 'EventController@show')->name('show');
 Route::resource('event', 'EventController');
+Route::delete('event/{id}/{companyId}', 'EventController@eventAndCompanyDestroy')->name('destroy');
 Route::get('/company/{id}', 'EventController@companyShow')->name('company.show');
