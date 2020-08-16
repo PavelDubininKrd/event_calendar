@@ -36,7 +36,8 @@
                         <td class="text-center">{{ $event->getDate() }}</td>
                         <td class="text-center">{{ $event->user->name }}</td>
                         <td class="text-center">
-                            <form action="{{ route('destroy', [$event->id, $event->company->id]) }}" method="POST">
+                            @if($event->isOwner())
+                            <form action="{{ route('event.destroy', $event->id) }}" method="POST">
                                 @method('DELETE')
                                 @csrf
                                 <a href="{{ route('event.edit', $event->id)}}" type="button" class="btn btn-success m-1">Изменить</a>
@@ -44,6 +45,7 @@
                                     <input type="submit" value="Удалить" class="btn btn-danger p-0">
                                 </button>
                             </form>
+                            @endif
                         </td>
 
                     </tr>

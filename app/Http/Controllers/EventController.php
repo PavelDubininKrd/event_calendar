@@ -16,82 +16,76 @@ class EventController extends Controller
         $this->middleware('auth');
     }
 
-    public function show()
-    {
-        $events = CalendarEvent::with('user')->orderBy('date')->orderBy('change')->paginate(10);
-        return view('pages.show', compact('events' ));
-    }
-
     public function index()
     {
-        $events = CalendarEvent::with('user')->orderBy('date')->paginate(10);
-        return view('pages.show', compact('events' ));
+        $events = CalendarEvent::with('user')->orderBy('date')->orderBy('change')->paginate(10);
+        return view('event.index', compact('events' ));
     }
 
     public function create() {
-        return view('pages.event_create');
+        return view('event.create');
     }
 
     public function store(Request $request) {
-        $company_save = Company::firstOrCreate(['name' => $request->company_name]);
-        $user_id = Auth::id();
-
-        $validatedData = $request->validate([
+            $validatedData = $request->validate([
             'title' => 'required',
             'cost' => 'required|numeric',
             'type' => 'required',
             'responsible' => 'required',
+            'company_name' => 'required',
             'date' => 'required|date',
             'change' => ['required', new ChangeDate($request->all())],
         ]);
+        $company_save = Company::firstOrCreate(['name' => $request->company_name]);
+        $user_id = Auth::id();
         $validatedData['user_id'] = $user_id;
         $validatedData['company_id'] = $company_save->id;
         CalendarEvent::create($validatedData);
 
-        $company = Company::find($company_save->id);
-        $company->users()->syncWithoutDetaching($user_id);
-
-        return redirect()->route('show');
+        return redirect()->route('event.index');
     }
 
     public function edit($id) {
         $event = CalendarEvent::findOrFail($id);
-        return view('pages.edit', compact('event'));
+        return view('event.edit', compact('event'));
     }
 
     public function update(Request $request, $id) {
         $company_save = Company::firstOrCreate(['name' => $request->company_name]);
+        /** @var CalendarEvent $event */
         $event = CalendarEvent::find($id);
+        if (!$event->isOwner()) {
+            abort(403, 'Отказано в доступе');
+        }
         $validatedData = $request->validate([
             'title' => 'required',
             'cost' => 'required|numeric',
             'type' => 'required',
             'responsible' => 'required',
+            'company_name' => 'required',
             'date' => 'required',
-            'change' => [
-                'required',
-                Rule::unique('calendar_events')->ignore($event->id,'id')->where(function ($query) use ($event, $request) {
-                    return $query->where('date', $request->date)->where('user_id', $event->user_id);
-                })
-        ]]);
+            'change' => ['required', new ChangeDate($request->all(), $id)]]);
         $validatedData['company_id'] = $company_save->id;
         $event->update($validatedData);
 
-        return redirect()->route('show');
+        return redirect()->route('event.index');
     }
 
-    public function eventAndCompanyDestroy($id, $company_id) {
-        CalendarEvent::where('id', $id)->delete();
-        $company = Company::with('events')->where('id', $company_id)->first();
-        if ($company->events->isEmpty()) {
-            Company::where('id', $company_id)->delete();
+    public function destroy($id) {
+        $event = CalendarEvent::with('company')->where('id', $id)->first();
+        if (!$event->isOwner()) {
+            abort(403, 'Отказано в доступе');
         }
-        // Cannot delete or update a parent row: a foreign key constraint fails.
-        return redirect()->route('show');
+        $event->delete();
+        if (!CalendarEvent::where('company_id', $event->company_id)->exists()) {
+            $event->company->delete();
+        }
+
+        return redirect()->route('event.index');
     }
 
     public function companyShow($id) {
-        $companies = Company::with('events')->with('users')->where('id', $id)->paginate(10);
-        return view('pages.category_list', compact('companies'));
+        $companies = Company::with('events.user')->where('id', $id)->paginate(10);
+        return view('event.company_list', compact('companies'));
     }
 }

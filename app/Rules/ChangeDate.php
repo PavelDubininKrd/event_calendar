@@ -3,20 +3,23 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ChangeDate implements Rule
 {
     private $data;
+    private $event_id;
 
     /**
-     * Create a new rule instance.
-     *
+     * ChangeDate constructor.
      * @param array $data
+     * @param int $event_id
      */
-    public function __construct(array $data)
+    public function __construct(array $data, int $event_id = 0)
     {
         $this->data = $data;
+        $this->event_id = $event_id;
     }
 
     /**
@@ -28,16 +31,12 @@ class ChangeDate implements Rule
      */
     public function passes($attribute, $value)
     {
-        $events = DB::table('calendar_events')->where('date', $this->data['date'])->get();
-        if ($events->isEmpty()) {
-            return true;
-        } else {
-            foreach ($events as $event) {
-                if ($event->change == $this->data['change']) {
-                    return false;
-                } return true;
-            }
-        }
+        return !DB::table('calendar_events')
+            ->where('date', $this->data['date'])
+            ->where('change', $this->data['change'])
+            ->where('user_id', Auth::id())
+            ->where('id', '!=', $this->event_id)
+            ->exists();
     }
 
     /**

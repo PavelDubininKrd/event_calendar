@@ -12,3 +12,10 @@
 <p>С уважение, Дубинин Павел.</p>
 </article>
  </div>
+ 1) change select from model
+ 2) add change table with constants
+ 3) seeds for dictionary changes
+ 4) cache changes for in file
+ 5) show then event was last edit
+ 6) all routes middleware auth
+ 7) evends validion for different users 

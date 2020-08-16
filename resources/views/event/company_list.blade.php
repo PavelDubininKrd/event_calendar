@@ -37,9 +37,7 @@
                             <td class="text-center">{{ $event->responsible }}</td>
                             <td class="text-center">{{ $event->change }}</td>
                             <td class="text-center">{{ $event->getDate() }}</td>
-                            @foreach($company->users as $user)
-                                <td class="text-center">{{ $user->name }}</td>
-                            @endforeach
+                            <td class="text-center">{{ $event->user->name }}</td>
                             <td class="text-center">
 {{--                                <form action="{{ route('event.destroy', $companies->id) }}" method="POST">--}}
 {{--                                    @method('DELETE')--}}

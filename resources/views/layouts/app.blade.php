@@ -25,7 +25,7 @@
             <div class="container">
                 @auth()
                     <div class="lex-center position-ref full-height mr-3">
-                        <a class="btn btn-outline-primary" href="{{ url('/show') }}">К списку событий</a>
+                        <a class="btn btn-outline-primary" href="{{ route('event.index') }}">К списку событий</a>
                     </div>
                     <div class="dropdown show">
                         <a class="btn btn-outline-primary" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

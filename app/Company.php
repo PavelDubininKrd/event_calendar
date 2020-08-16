@@ -11,7 +11,7 @@ class Company extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'user_company');
+        return $this->belongsToMany(User::class, 'calendar_events');
     }
 
     public function events()

@@ -4,14 +4,15 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class CalendarEvent extends Model
 {
     protected $fillable = ['name', 'title', 'cost', 'type', 'company_id', 'responsible', 'date', 'change', 'user_id'];
     protected $changes = [
-        '1' => 'Утро',
-        '2' => 'День',
-        '3' => 'Ночь'
+        1 => 'Утро',
+        2 => 'День',
+        3 => 'Ночь'
     ];
 
     public function user()
@@ -32,5 +33,10 @@ class CalendarEvent extends Model
     public function getDate()
     {
         return Carbon::parse($this->date)->format('d/m/Y');
+    }
+
+    public function isOwner()
+    {
+        return Auth::id() === $this->user_id;
     }
 }
