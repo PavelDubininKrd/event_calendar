@@ -10,12 +10,16 @@
 </ol>
 <p>Спасибо.</p>
 <p>С уважение, Дубинин Павел.</p>
+
+<p>To Do</p>
+<ol>
+<li>change select from model</li>
+<li>add change table with constants</li>
+<li>seeds for dictionary changes</li>
+<li>cache changes for in file</li>
+<li>show then event was last edit</li>
+<li>all routes middleware auth</li>
+<li>evends validion for different users</li>
+</ol>
 </article>
  </div>
- 1) change select from model
- 2) add change table with constants
- 3) seeds for dictionary changes
- 4) cache changes for in file
- 5) show then event was last edit
- 6) all routes middleware auth
- 7) evends validion for different users 
