@@ -19,6 +19,8 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/show', 'EventController@show')->name('show');
-Route::resource('event', 'EventController');
-Route::get('/company/{id}', 'EventController@companyShow')->name('company.show');
+Route::group(['middleware' => 'auth'], function (){
+    Route::get('/show', 'EventController@show')->name('show');
+    Route::resource('event', 'EventController');
+    Route::get('/company/{id}', 'EventController@companyShow')->name('company.show');
+});

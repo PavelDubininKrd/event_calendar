@@ -18,6 +18,7 @@
                         <th class="text-center" scope="col">Смена</th>
                         <th class="text-center" scope="col">Дата</th>
                         <th class="text-center" scope="col">Пользователь</th>
+                        <th class="text-center" scope="col">Изменено</th>
                         <th class="text-center" scope="col">Действия</th>
                     </tr>
                 </thead>
@@ -32,9 +33,10 @@
                         <td class="text-center">{{ $event->type }}</td>
                         <td class="text-center">{{ $event->company->name }}</td>
                         <td class="text-center">{{ $event->responsible }}</td>
-                        <td class="text-center">{{ $event->change }}</td>
+                        <td class="text-center">{{ $event->dictionary->change_text }}</td>
                         <td class="text-center">{{ $event->getDate() }}</td>
                         <td class="text-center">{{ $event->user->name }}</td>
+                        <td class="text-center">{{ $event->getDateUpdate() }}</td>
                         <td class="text-center">
                             @if($event->isOwner())
                             <form action="{{ route('event.destroy', $event->id) }}" method="POST">
@@ -47,7 +49,6 @@
                             </form>
                             @endif
                         </td>
-
                     </tr>
                 @endforeach
                 </tbody>

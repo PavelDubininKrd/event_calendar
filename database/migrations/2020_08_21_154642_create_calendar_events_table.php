@@ -23,9 +23,11 @@ class CreateCalendarEventsTable extends Migration
             $table->integer('change');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('change_id');
             $table->timestamps();
             $table->foreign('user_id', 'ix_calendar_events_user_id')->references('id')->on('users');
-            $table->foreign('company_id', 'ix_calendar_events_company_id')->references('id')->on('companies');
+            $table->foreign('company_id', 'ix_calendar_events_company_id')->references('id')->on('companies')->onDelete('cascade');
+            $table->foreign('change_id', 'ix_calendar_events_change_id')->references('id')->on('changes_dictionary');
         });
     }
 
@@ -41,6 +43,9 @@ class CreateCalendarEventsTable extends Migration
         });
         Schema::table('calendar_events', function (Blueprint $table) {
             $table->dropForeign(['ix_calendar_events_company_id']);
+        });
+        Schema::table('calendar_events', function (Blueprint $table) {
+            $table->dropForeign(['ix_calendar_events_change_id']);
         });
         Schema::dropIfExists('calendar_events');
     }

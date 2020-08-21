@@ -7,6 +7,7 @@ use App\Company;
 use App\Rules\ChangeDate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class EventController extends Controller
@@ -18,18 +19,19 @@ class EventController extends Controller
 
     public function index()
     {
-        $events = CalendarEvent::with('user')->orderBy('date')->orderBy('change')->paginate(10);
+        $events = CalendarEvent::with('user')->with('dictionary')->orderBy('date')->orderBy('change')->paginate(10);
         return view('event.index', compact('events' ));
     }
 
     public function create() {
-        return view('event.create');
+        $changes = DB::table('changes_dictionary')->get();
+        return view('event.create', compact('changes'));
     }
 
     public function store(Request $request) {
             $validatedData = $request->validate([
             'title' => 'required',
-            'cost' => 'required|numeric',
+            'cost' => 'required|numeric|between:1,100000000',
             'type' => 'required',
             'responsible' => 'required',
             'company_name' => 'required',
@@ -40,6 +42,7 @@ class EventController extends Controller
         $user_id = Auth::id();
         $validatedData['user_id'] = $user_id;
         $validatedData['company_id'] = $company_save->id;
+        $validatedData['change_id'] = $request->change;
         CalendarEvent::create($validatedData);
 
         return redirect()->route('event.index');

@@ -37,9 +37,9 @@
             <div class="form-group">
                 <label>Смена</label>
                 <select class="form-control" id="projectName" name="change">
-                    <option value="1">Утро</option>
-                    <option value="2">День</option>
-                    <option value="3">Ночь</option>
+                    @foreach($changes as $change)
+                        <option value="{{ $change->id }}">{{ $change->change_text }}</option>
+                    @endforeach
                 </select>
             </div>
             <div class="form-group">

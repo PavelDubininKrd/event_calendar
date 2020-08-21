@@ -19,7 +19,6 @@
 <li>cache changes for in file</li>
 <li>show then event was last edit</li>
 <li>all routes middleware auth</li>
-<li>evends validion for different users</li>
 </ol>
 </article>
  </div>
