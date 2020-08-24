@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CalendarEvent extends Model
 {
-    protected $fillable = ['name', 'title', 'cost', 'type', 'responsible', 'date', 'change', 'user_id', 'company_id', 'change_id',];
+    protected $fillable = ['name', 'title', 'cost', 'type', 'responsible', 'date', 'user_id', 'company_id', 'change_id',];
 
     public function user()
     {
@@ -20,7 +20,7 @@ class CalendarEvent extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function dictionary()
+    public function change()
     {
         return $this->belongsTo(ChangeDictionary::class, 'change_id');
     }
@@ -32,7 +32,7 @@ class CalendarEvent extends Model
 
     public function getDateUpdate()
     {
-        return Carbon::parse($this->updated_at)->format('d/m/Y, H:i:s');
+        return Carbon::parse($this->updated_at)->format('d/m/Y, H:i');
     }
 
     public function isOwner()

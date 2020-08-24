@@ -20,7 +20,6 @@ class CreateCalendarEventsTable extends Migration
             $table->text('type');
             $table->text('responsible');
             $table->date('date');
-            $table->integer('change');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('change_id');

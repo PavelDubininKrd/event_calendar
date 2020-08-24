@@ -33,7 +33,7 @@
                         <td class="text-center">{{ $event->type }}</td>
                         <td class="text-center">{{ $event->company->name }}</td>
                         <td class="text-center">{{ $event->responsible }}</td>
-                        <td class="text-center">{{ $event->dictionary->change_text }}</td>
+                        <td class="text-center">{{ $event->change->change_text }}</td>
                         <td class="text-center">{{ $event->getDate() }}</td>
                         <td class="text-center">{{ $event->user->name }}</td>
                         <td class="text-center">{{ $event->getDateUpdate() }}</td>

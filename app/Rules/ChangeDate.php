@@ -33,7 +33,7 @@ class ChangeDate implements Rule
     {
         return !DB::table('calendar_events')
             ->where('date', $this->data['date'])
-            ->where('change', $this->data['change'])
+            ->where('change_id', $this->data['change_id'])
             ->where('user_id', Auth::id())
             ->where('id', '!=', $this->event_id)
             ->exists();

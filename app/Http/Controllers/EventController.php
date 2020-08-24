@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\CalendarEvent;
+use App\ChangeDictionary;
 use App\Company;
 use App\Rules\ChangeDate;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class EventController extends Controller
 
     public function index()
     {
-        $events = CalendarEvent::with('user')->with('dictionary')->orderBy('date')->orderBy('change')->paginate(10);
+        $events = CalendarEvent::with('user')->with('change')->orderBy('date')->orderBy('change_id')->paginate(10);
         return view('event.index', compact('events' ));
     }
 
@@ -36,13 +37,13 @@ class EventController extends Controller
             'responsible' => 'required',
             'company_name' => 'required',
             'date' => 'required|date',
-            'change' => ['required', new ChangeDate($request->all())],
+            'change_id' => ['required', new ChangeDate($request->all())],
         ]);
         $company_save = Company::firstOrCreate(['name' => $request->company_name]);
         $user_id = Auth::id();
         $validatedData['user_id'] = $user_id;
         $validatedData['company_id'] = $company_save->id;
-        $validatedData['change_id'] = $request->change;
+//        $validatedData['change_id'] = $request->change;
         CalendarEvent::create($validatedData);
 
         return redirect()->route('event.index');
