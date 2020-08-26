@@ -35,18 +35,20 @@
                             <td class="text-center">{{ $event->type }}</td>
 
                             <td class="text-center">{{ $event->responsible }}</td>
-                            <td class="text-center">{{ $event->change }}</td>
+                            <td class="text-center">{{ $event->change->change_text }}</td>
                             <td class="text-center">{{ $event->getDate() }}</td>
                             <td class="text-center">{{ $event->user->name }}</td>
                             <td class="text-center">
-{{--                                <form action="{{ route('event.destroy', $companies->id) }}" method="POST">--}}
-{{--                                    @method('DELETE')--}}
-{{--                                    @csrf--}}
-{{--                                    <a href="{{ route('event.edit', $companies->id) }}" type="button" class="btn btn-success m-1">Изменить</a>--}}
-{{--                                    <button onclick="return confirm('Вы уверены?')" type="submit" class="btn btn-danger delete">--}}
-{{--                                        <input type="submit" value="Удалить" class="btn btn-danger p-0">--}}
-{{--                                    </button>--}}
-{{--                                </form>--}}
+                                @if($event->isOwner())
+                                    <form action="{{ route('event.destroy', $event->id) }}" method="POST">
+                                        @method('DELETE')
+                                        @csrf
+                                        <a href="{{ route('event.edit', $event->id)}}" type="button" class="btn btn-success m-1">Изменить</a>
+                                        <button onclick="return confirm('Вы уверены?')" type="submit" class="btn btn-danger delete">
+                                            <input type="submit" value="Удалить" class="btn btn-danger p-0">
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                         @endforeach

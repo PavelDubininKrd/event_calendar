@@ -5,11 +5,8 @@ namespace App\Http\Controllers;
 use App\CalendarEvent;
 use App\ChangeDictionary;
 use App\Company;
-use App\Rules\ChangeDate;
-use Illuminate\Http\Request;
+use App\Http\Requests\Event;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 
 class EventController extends Controller
 {
@@ -25,25 +22,16 @@ class EventController extends Controller
     }
 
     public function create() {
-        $changes = DB::table('changes_dictionary')->get();
+        $changes = ChangeDictionary::all();
         return view('event.create', compact('changes'));
     }
 
-    public function store(Request $request) {
-            $validatedData = $request->validate([
-            'title' => 'required',
-            'cost' => 'required|numeric|between:1,100000000',
-            'type' => 'required',
-            'responsible' => 'required',
-            'company_name' => 'required',
-            'date' => 'required|date',
-            'change_id' => ['required', new ChangeDate($request->all())],
-        ]);
+    public function store(Event $request) {
+        $validatedData = $request->validated();
         $company_save = Company::firstOrCreate(['name' => $request->company_name]);
         $user_id = Auth::id();
         $validatedData['user_id'] = $user_id;
         $validatedData['company_id'] = $company_save->id;
-//        $validatedData['change_id'] = $request->change;
         CalendarEvent::create($validatedData);
 
         return redirect()->route('event.index');
@@ -54,21 +42,14 @@ class EventController extends Controller
         return view('event.edit', compact('event'));
     }
 
-    public function update(Request $request, $id) {
+    public function update(Event $request, $id) {
         $company_save = Company::firstOrCreate(['name' => $request->company_name]);
         /** @var CalendarEvent $event */
         $event = CalendarEvent::find($id);
         if (!$event->isOwner()) {
             abort(403, 'Отказано в доступе');
         }
-        $validatedData = $request->validate([
-            'title' => 'required',
-            'cost' => 'required|numeric',
-            'type' => 'required',
-            'responsible' => 'required',
-            'company_name' => 'required',
-            'date' => 'required',
-            'change' => ['required', new ChangeDate($request->all(), $id)]]);
+        $validatedData = $request->validated();
         $validatedData['company_id'] = $company_save->id;
         $event->update($validatedData);
 
@@ -84,12 +65,15 @@ class EventController extends Controller
         if (!CalendarEvent::where('company_id', $event->company_id)->exists()) {
             $event->company->delete();
         }
-
+        $previous_route = app('router')->getRoutes()->match(app('request')->create(url()->previous()))->getName();
+        if ($previous_route === 'company.show') {
+            return redirect()->route('company.show', $event->company_id);
+        }
         return redirect()->route('event.index');
     }
 
     public function companyShow($id) {
-        $companies = Company::with('events.user')->where('id', $id)->paginate(10);
+        $companies = Company::with('events.change')->with('users')->where('id', $id)->paginate(10);
         return view('event.company_list', compact('companies'));
     }
 }

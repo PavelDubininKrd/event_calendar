@@ -36,7 +36,7 @@
             </div>
             <div class="form-group">
                 <label>Смена</label>
-                <select class="form-control" id="projectName" name="change">
+                <select class="form-control" id="projectName" name="change_id">
                     @foreach(\App\ChangeDictionary::getCache() as $change)
                         <option value="{{ $change->id }}"{{ $event->change_id == $change->id ? 'selected' : '' }}>{{ $change->change_text }}</option>
                     @endforeach
