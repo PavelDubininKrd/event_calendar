@@ -38,7 +38,7 @@
                         <td class="text-center">{{ $event->user->name }}</td>
                         <td class="text-center">{{ $event->getDateUpdate() }}</td>
                         <td class="text-center">
-                            @if($event->isOwner())
+                            @if($event->isOwner() || $event->isAdmin())
                             <form action="{{ route('event.destroy', $event->id) }}" method="POST">
                                 @method('DELETE')
                                 @csrf

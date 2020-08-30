@@ -10,6 +10,9 @@ class CalendarEvent extends Model
 {
     protected $fillable = ['name', 'title', 'cost', 'type', 'responsible', 'date', 'user_id', 'company_id', 'change_id',];
 
+    const IS_NORMAL = 1;
+    const IS_ADMIN = 2;
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -38,5 +41,10 @@ class CalendarEvent extends Model
     public function isOwner()
     {
         return Auth::id() === $this->user_id;
+    }
+
+    public function isAdmin()
+    {
+        return Auth::user()->role === CalendarEvent::IS_ADMIN;
     }
 }
